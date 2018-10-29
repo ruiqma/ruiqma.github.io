@@ -20,6 +20,7 @@
 
         var path, springs;
         var size = view.size * [1.2, 1];
+        var fillcolor = "#55acee"
 
         var Spring = function(a, b, strength, restLength) {
             this.a = a;
@@ -44,7 +45,7 @@
 
         function createPath(strength) {
             var path = new Path({
-                fillColor: 'black'
+                fillColor: fillcolor
             });
             springs = [];
             for (var i = 0; i <= values.amount; i++) {
@@ -117,6 +118,12 @@
     </script>
 </head>
 <body>
-    <canvas id="canvas" resize hidpi="off"></canvas>
+  <h4>
+    Welcome to Rui's site<br>
+  </h4>
+  <a href="https://twitter.com/rui_qma"><img src="icon/twitter.png"></a>
+  <a href="https://qiita.com/rui_qma"><img src="icon/qiita.png"></a>
+  <a href="https://github.com/ruiqma"><img src="icon/github.png"></a>
+  <canvas id="canvas" resize hidpi="off"></canvas>
 </body>
 </html>
