@@ -3,132 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <title>Rui's site</title>
-    <link rel="stylesheet" href="css/style.css"  type="text/css" media="all" >
+    <link rel="stylesheet" href="css/style.css"  type="text/css" media="all">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  	<script type="text/javascript">
+  	(function($){$.fn.easyTabs=function(option){var param=jQuery.extend({fadeSpeed:"fast",defaultContent:1,activeClass:'active'},option);$(this).each(function(){var thisId="#"+this.id;if(param.defaultContent==''){param.defaultContent=1;}
+  	if(typeof param.defaultContent=="number")
+  	{var defaultTab=$(thisId+" .tabs li:eq("+(param.defaultContent-1)+") a").attr('href').substr(1);}else{var defaultTab=param.defaultContent;}
+  	$(thisId+" .tabs li a").each(function(){var tabToHide=$(this).attr('href').substr(1);$("#"+tabToHide).addClass('easytabs-tab-content');});hideAll();changeContent(defaultTab);function hideAll(){$(thisId+" .easytabs-tab-content").hide();}
+  	function changeContent(tabId){hideAll();$(thisId+" .tabs li").removeClass(param.activeClass);$(thisId+" .tabs li a[href=#"+tabId+"]").closest('li').addClass(param.activeClass);if(param.fadeSpeed!="none")
+  	{$(thisId+" #"+tabId).fadeIn(param.fadeSpeed);}else{$(thisId+" #"+tabId).show();}}
+  	$(thisId+" .tabs li").click(function(){var tabId=$(this).find('a').attr('href').substr(1);changeContent(tabId);return false;});});}})(jQuery);
+  	</script>
+    <script type="text/javascript" charset="utf-8">
+  		$(document).ready(function() {
+  			$('#container').easyTabs({defaultContent:1});
+  		});
+  	</script>
     <style type="text/css">
-  					body{
-  				font-family: 'determination_jpregular';
-  							}
-  		</style>
-    <script type="text/javascript" src="dist/paper-full.js"></script>
-    <script type="text/paperscript" canvas="canvas">
-        // Code ported to Paper.js from http://the389.com/9/1/
-        // with permission.
-
-        var values = {
-            friction: 0.8,
-            timeStep: 0.01,
-            amount: 15,
-            mass: 2,
-            count: 0
-        };
-        values.invMass = 1 / values.mass;
-
-        var path, springs;
-        var size = view.size * [1.2, 1];
-        var fillcolor = "#55acee"
-
-        var Spring = function(a, b, strength, restLength) {
-            this.a = a;
-            this.b = b;
-            this.restLength = restLength || 80;
-            this.strength = strength ? strength : 0.55;
-            this.mamb = values.invMass * values.invMass;
-        };
-
-        Spring.prototype.update = function() {
-            var delta = this.b - this.a;
-            var dist = delta.length;
-            var normDistStrength = (dist - this.restLength) /
-                    (dist * this.mamb) * this.strength;
-            delta.y *= normDistStrength * values.invMass * 0.2;
-            if (!this.a.fixed)
-                this.a.y += delta.y;
-            if (!this.b.fixed)
-                this.b.y -= delta.y;
-        };
-
-
-        function createPath(strength) {
-            var path = new Path({
-                fillColor: fillcolor
-            });
-            springs = [];
-            for (var i = 0; i <= values.amount; i++) {
-                var segment = path.add(new Point(i / values.amount, 0.5) * size);
-                var point = segment.point;
-                if (i == 0 || i == values.amount)
-                    point.y += size.height;
-                point.px = point.x;
-                point.py = point.y;
-                // The first two and last two points are fixed:
-                point.fixed = i < 2 || i > values.amount - 2;
-                if (i > 0) {
-                    var spring = new Spring(segment.previous.point, point, strength);
-                    springs.push(spring);
-                }
-            }
-            path.position.x -= size.width / 4;
-            return path;
-        }
-
-        function onResize() {
-            if (path)
-                path.remove();
-            size = view.bounds.size * [2, 1];
-            path = createPath(0.1);
-        }
-
-        function onMouseMove(event) {
-            var location = path.getNearestLocation(event.point);
-            var segment = location.segment;
-            var point = segment.point;
-
-            if (!point.fixed && location.distance < size.height / 4) {
-                var y = event.point.y;
-                point.y += (y - point.y) / 6;
-                var previous = segment.previous && segment.previous.point;
-                var next = segment.next && segment.next.point;
-                if (previous && !previous.fixed)
-                    previous.y += (y - previous.y) / 24;
-                if (next && !next.fixed)
-                    next.y += (y - next.y) / 24;
-            }
-        }
-
-        function onFrame(event) {
-            updateWave(path);
-        }
-
-        function updateWave(path) {
-            var force = 1 - values.friction * values.timeStep * values.timeStep;
-            for (var i = 0, l = path.segments.length; i < l; i++) {
-                var point = path.segments[i].point;
-                var dy = (point.y - point.py) * force;
-                point.py = point.y;
-                point.y = Math.max(point.y + dy, 0);
-            }
-
-            for (var j = 0, l = springs.length; j < l; j++) {
-                springs[j].update();
-            }
-            path.smooth({ type: 'continuous' });
-        }
-
-        function onKeyDown(event) {
-            if (event.key == 'space') {
-                path.fullySelected = !path.fullySelected;
-                path.fillColor = path.fullySelected ? null : 'black';
-            }
-        }
-    </script>
+  		body{
+  			font-family: 'determination_jpregular';
+  		}
+  	</style>
 </head>
 <body>
-  <div class="fullreverse">
-    <p>Welcome to Rui's site</p>
-    <a href="https://twitter.com/rui_qma"><img src="icon/twitter.png"></a>
-    <a href="https://qiita.com/rui_qma"><img src="icon/qiita.png"></a>
-    <a href="https://github.com/ruiqma"><img src="icon/github.png"></a>
-    <canvas id="canvas" resize hidpi="off"></canvas>
-  </div>
+<div id="container">
+	<div id="header">
+		Rui's Portfolio</div>
+	<ul class="tabs">
+		<li><a href="#specimen">About</a></li>
+		<li><a href="#layout">Skill</a></li>
+    <!-- <li><a href="#works">Works</a></li> -->
+		<li><a href="#installing">Contact</a></li>
+
+	</ul>
+	<div id="main_content">
+
+
+			<div id="specimen">
+
+				<div class="section psample fullreverse" id="" style="border-bottom: 20px #000 solid;">
+						<p class="size30">
+              <h1>Rui</h1>
+              <span>LV</span>1<br>
+              <span>HP</span>20/20<br>
+              <span>G </span>0<br>
+              <br>
+              <br>
+              <a href="#layout"><h1>Skill</h1></a>
+              <a href="#installing"><h1>Contact</h1></a>
+            </p>
+
+
+				</div>
+
+			</div>
+
+			<div id="layout">
+
+				<div class="section">
+
+					<div class="grid12 firstcol">
+						<h1>Skill</h1>
+						<h2>Getting Ready</h2>
+					</div>
+				</div>
+      </div>
+
+		<div id="installing">
+			<div class="section">
+				<div class="grid7 firstcol">
+					<h1>Contact</h1>
+
+					<p>Getting Ready</p>
+        </div>
+      </div>
+	</div>
+</div>
+<div id="footer">
+  <a href="https://twitter.com/rui_qma"><img src="icon/twitter.png"></a>
+  <a href="https://qiita.com/rui_qma"><img src="icon/qiita.png"></a>
+  <a href="https://github.com/ruiqma"><img src="icon/github.png"></a>
+</div>
 </body>
 </html>
